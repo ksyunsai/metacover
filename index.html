@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#142f40">
+  <meta name="description" content="수원·용인·오산의 침수 발생 기록과 출처를 지도에서 확인하고 지방하천 범람예상도를 열어보세요.">
+  <title>침수이력 및 범람예상도 | 메타커버</title>
+  <link rel="stylesheet" href="./assets/map.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous" media="print" onload="this.media='all';window.metacoverCssReady=true;window.dispatchEvent(new Event('map-library-ready'))">
+  <script defer src="./assets/districts.js"></script>
+  <script defer src="./records.js"></script>
+  <script defer src="./assets/map.js"></script>
+  <script async src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous" onload="window.dispatchEvent(new Event('map-library-ready'))"></script>
+</head>
+<body>
+  <a class="skip" href="#history">침수이력 목록 바로가기</a>
+  <header class="masthead">
+    <a class="brand" href="./" aria-label="메타커버 첫 화면"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>METACOVER</span></a>
+    <span class="brand-rule"></span><span class="brand-ko">공간정보 서비스</span>
+    <button class="help-trigger" id="help-open" type="button"><span class="help-icon" aria-hidden="true">i</span> 자료 안내</button>
+  </header>
+  <main>
+    <div class="pagehead"><div><p class="region-line">경기도 <span>/</span> 수원 · 용인 · 오산</p><h1>침수이력 및 범람예상도</h1></div>
+      <a class="forecast-entry" href="./forecast/">내 파일로 50년 빈도 지도 열기 <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="workspace">
+      <aside class="sidebar" id="history" aria-label="침수이력 조회">
+        <div class="filter-block">
+          <h2>침수이력 조회</h2>
+          <div class="filters"><label>시<select id="city"><option value="">전체 지역</option><option>수원시</option><option>용인시</option><option>오산시</option></select></label>
+            <label>구<select id="district"><option value="">전체</option></select></label></div>
+        </div>
+        <div class="list-heading"><h3>발생 기록 <span id="count" aria-live="polite">–</span></h3><span>최근 발생순</span></div>
+        <div class="record-list" id="record-list"></div>
+        <section class="forecast-guide">
+          <h3>50년 빈도 범람예상도</h3>
+          <p>공식 지도의 ‘행정구역’에서 경기도 → 시·구 → 읍면동을 고른 뒤 ‘50년 빈도’를 선택하세요.</p>
+          <a class="forecast-link" href="https://www.floodmap.go.kr/region/" target="_blank" rel="noopener">공식 지방하천 지도 열기 <span aria-hidden="true">↗</span></a>
+        </section>
+      </aside>
+      <section class="map-pane" id="map-pane" aria-label="침수기록 위치 지도">
+        <div class="map-heading"><h2 id="map-title">전체 지역</h2><span class="heading-divider"></span><span>침수이력 지도</span>
+          <button id="overview" type="button">전체 보기</button></div>
+        <div id="map-body" class="map-body">
+          <div id="fallback" aria-label="행정구역 참고도"></div><div id="osm-map" hidden aria-label="상세 지도"></div>
+          <span id="map-mode" class="map-mode">행정구역 참고도</span>
+          <div class="map-key"><span class="legend-dot"></span> 기록의 대표 위치</div>
+          <div id="fallback-credit" class="credit">경계 참고 <a href="https://github.com/southkorea/southkorea-maps#copyright-and-license" target="_blank" rel="noopener">통계청(2013)</a></div>
+        </div>
+        <section class="detail" id="detail" aria-live="polite" aria-label="선택한 침수기록"></section>
+      </section>
+    </div>
+  </main>
+  <dialog id="help"><div class="dialog-head"><h2>자료 안내</h2><button type="button" id="help-close">닫기</button></div>
+    <h3>침수이력</h3><p>기록을 선택하면 발생 시기와 장소, 확인한 문헌을 볼 수 있습니다. 지도 점은 문헌에서 언급한 도로·시설·지역의 대표 위치입니다.</p>
+    <h3>지방하천 범람예상도</h3><p>한강홍수통제소가 지방하천 범람을 모의한 50년 빈도 자료입니다. 개별 기록의 실제 침수 깊이와 범위는 해당 기록의 출처에서 확인하세요.</p>
+    <a class="text-link" href="https://www.floodmap.go.kr/region/" target="_blank" rel="noopener">홍수위험지도 정보시스템 ↗</a>
+  </dialog>
+  <noscript><p>지도와 목록을 표시하려면 자바스크립트를 켜 주세요. <a href="https://www.floodmap.go.kr/region/">공식 지방하천 범람지도 열기</a></p></noscript>
+</body></html>

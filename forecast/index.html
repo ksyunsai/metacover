@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#183447">
+  <title>내 파일로 범람예상도 보기 | 메타커버</title>
+  <meta name="description" content="오산·수원·용인 지방하천의 50년 빈도 홍수 시나리오에서 예상되는 범람 범위와 침수심을 지도에서 확인하세요.">
+  <link rel="stylesheet" href="./forecast.css">
+</head>
+<body class="river50-active file-required">
+  <a class="skip" href="#map">지도로 바로가기</a>
+  <header class="mast">
+    <a class="brand" id="map-home" href="#river50" aria-label="메타커버 지도 처음으로">
+      <svg viewBox="0 0 36 36" aria-hidden="true"><path fill="none" stroke="#91d7be" stroke-linecap="square" stroke-linejoin="miter" stroke-width="3.6" d="m3 23 8-13 7 11 7-11 8 13M4 28h28"/></svg>
+      <b>METACOVER</b>
+    </a>
+    <span class="mast-rule" aria-hidden="true"></span>
+    <h1>지방하천 범람예상도</h1>
+    <nav aria-label="지도 메뉴">
+      <a id="site-home" href="../" class="mast-btn site-home" aria-label="메타커버 홈페이지" title="메타커버 홈페이지"><i data-i="home"></i><span>홈페이지</span></a>
+      <button type="button" id="sources" data-nav="sources" class="mast-btn" aria-haspopup="dialog" aria-controls="dialog" aria-label="자료 안내"><i data-i="info"></i><span>자료 안내</span></button>
+    </nav>
+  </header>
+  <section class="file-panel" aria-labelledby="file-title">
+    <div class="file-intro">
+      <h2 id="file-title">내 파일로 범람예상도 보기</h2>
+      <p>메타커버의 지방하천 50년 빈도 지도 ZIP을 선택하세요. 파일은 이 브라우저에서만 열립니다.</p>
+    </div>
+    <div class="file-tools">
+      <div class="file-pick">
+        <label for="forecast-file">지도 ZIP 파일</label>
+        <input id="forecast-file" type="file" accept=".zip,application/zip">
+      </div>
+      <a class="official-view" href="https://www.floodmap.go.kr/region/" target="_blank" rel="noopener noreferrer">공식 지방하천 범람지도 열기 ↗</a>
+    </div>
+    <p class="file-status" id="zip-status" role="status"></p>
+  </section>
+
+  <div id="river50-nav" class="river50-nav">
+    <span id="river50-scenario">홍수 시나리오 <span>·</span> 50년 빈도</span>
+    <div id="river50-picker">
+      <label for="river50-district">조회 지역</label>
+      <select id="river50-district" disabled><option>불러오는 중</option></select>
+    </div>
+  </div>
+  <main class="workspace">
+    <section class="geo" aria-label="범람예상도">
+      <div id="map" tabindex="0" role="region" aria-label="50년 빈도 지방하천 범람예상도. 방향키로 이동하고 더하기, 빼기로 확대하거나 축소합니다.">
+        <svg id="locator" aria-hidden="true"></svg>
+        <div id="tiles" aria-hidden="true"></div>
+        <svg id="shapes" aria-label="예상 범람 구역"></svg>
+        <div id="pins" aria-hidden="true"></div>
+        <div class="top-tools">
+          <div class="display-tools">
+            <div class="base-switch" role="group" aria-label="배경지도 종류">
+              <button type="button" data-basemap="street" aria-pressed="true">일반지도</button>
+              <button type="button" data-basemap="satellite" aria-pressed="false">위성영상</button>
+            </div>
+            <button type="button" id="layer-btn" class="tool" aria-expanded="false" aria-controls="layer-box" aria-label="지도 레이어"><i data-i="layers"></i><span>레이어</span></button>
+          </div>
+        </div>
+        <div class="controls">
+          <button type="button" id="fit" title="조회 지역 전체 보기" aria-label="조회 지역 전체 보기"><i data-i="focus"></i></button>
+          <div class="zoom">
+            <button type="button" id="zin" title="확대" aria-label="지도 확대"><i data-i="plus"></i></button>
+            <button type="button" id="zout" title="축소" aria-label="지도 축소"><i data-i="minus"></i></button>
+          </div>
+        </div>
+        <div id="layer-box" class="layer-box" hidden>
+          <div class="layer-title"><b>지도 레이어</b><button type="button" id="close-layers" class="iconbtn" aria-label="레이어 닫기"><i data-i="x"></i></button></div>
+          <label><input id="forecast-areas" type="checkbox" checked>예상 범람 구역</label>
+          <label><input id="check-tiles" type="checkbox" checked>배경지도 표시</label>
+        </div>
+        <div id="map-popup" hidden></div>
+        <div class="map-foot">
+          <div class="scaleblock"><span id="scale"></span></div>
+          <div class="attribution-box"><span id="basemap-name">배경지도 연결 중</span><span id="attribution"></span></div>
+        </div>
+      </div>
+      <div class="map-key river50-legend" id="river50-legend" hidden>
+        <b>50년 빈도 예상 침수심</b>
+        <div id="river50-depths"></div>
+        <span id="river50-highlight-key" hidden><i aria-hidden="true"></i>범람 위치 강조 · 누르면 확대</span>
+      </div>
+      <div class="feed-status">
+        <i data-i="database"></i>
+        <div id="feed-text" role="status">범람예상도를 불러오는 중</div>
+        <button type="button" id="retry" title="자료 다시 조회" aria-label="자료 다시 조회"><i data-i="refresh"></i></button>
+      </div>
+    </section>
+  </main>
+  <dialog id="dialog" aria-labelledby="modal-title">
+    <div class="modal-head"><h2 id="modal-title">범람예상도 자료 안내</h2><button type="button" id="close" aria-label="자료 안내 닫기" class="iconbtn"><i data-i="x"></i></button></div>
+    <div id="modal-body"></div>
+  </dialog>
+  <div id="toast" role="status" hidden></div>
+  <script defer src="./map.js"></script>
+  <script defer src="./zip.js"></script>
+  <script defer src="./forecast.js"></script>
+</body>
+</html>
