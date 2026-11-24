@@ -12,7 +12,7 @@
       color:#203643;background:#fff;color-scheme:light;word-break:keep-all;
     }
     * { box-sizing:border-box; }
-    body { margin:0;height:100vh;height:100dvh;display:flex;flex-direction:column; }
+    body { margin:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column; }
     h1,h2,h3,p { margin:0; }
     a { color:#185973;text-underline-offset:3px; }
     button,select { font:inherit;color:inherit; }
@@ -32,8 +32,8 @@
     .scenario span { color:#899ca7; }
     .place { margin-left:auto;display:flex;align-items:center;gap:7px;color:#465e6c;font-size:12px;white-space:nowrap; }
     .place select { min-width:130px;max-width:48vw;height:30px;padding:2px 7px;border-radius:3px;border:1px solid #a7b8c2;background:#fff;font-size:13px;color:#163849; }
-    .viewer { flex:1 1 auto;min-height:0;width:100%;display:flex;background:#eef2f3; }
-    .viewer iframe { display:block;flex:1;width:100%;height:100%;border:0; }
+    .viewer { flex:1 0 auto;min-height:730px;width:100%;display:flex;background:#eef2f3; }
+    .viewer iframe { display:block;flex:1;align-self:stretch;width:100%;min-height:730px;border:0; }
     .foot { flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:30px;padding:4px 15px;border-top:1px solid #d0dbdf;background:#f5f7f7;color:#465f6c;font-size:11px;line-height:1.5; }
     .foot a { white-space:nowrap;font-weight:650; }
     .sr { position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap; }
@@ -99,7 +99,7 @@
   <dialog id="help" aria-labelledby="help-title">
     <header class="dialog-head"><h2 id="help-title">자료 안내</h2><button id="close-help" type="button">닫기</button></header>
     <div class="dialog-body">
-      <section><h3>지방하천 범람예상도</h3><p>경기도 경기기후지도의 지방하천 50년 빈도 레이어입니다. 첫 방문에 ‘가이드’가 뜨면 하단의 ‘닫기’를 누르세요. 예상 침수 범위와 깊이는 공식 지도 안의 범례로 읽을 수 있습니다. 지역을 선택하면 지도 중심이 이동합니다.</p></section>
+      <section><h3>지방하천 범람예상도</h3><p>경기도 경기기후지도의 지방하천 50년 빈도 레이어입니다. 첫 방문에 ‘가이드’가 뜨면 하단의 ‘닫기’를 누르세요. 작은 화면에서는 페이지를 아래로 스크롤하면 보입니다. 예상 침수 범위와 깊이는 공식 지도 안의 범례로 읽을 수 있습니다. 지역을 선택하면 지도 중심이 이동합니다.</p></section>
       <section><h3>과거 침수 발생 기록</h3><p>수원·용인·오산에서 문헌으로 확인된 침수 사례와 기록별 출처를 볼 수 있습니다.</p><a href="./history/">침수 발생 기록 보기 →</a></section>
       <section><h3>개인 지도 파일</h3><p>메타커버 지도 ZIP을 가지고 있다면 내 브라우저에서 범람예상도를 열 수 있습니다.</p><a href="./forecast/">내 파일로 범람예상도 보기 →</a></section>
     </div>
