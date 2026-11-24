@@ -2,77 +2,51 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#183447">
-  <meta name="description" content="수원·용인·오산 8개 지역의 지방하천 50년 빈도 범람예상도와 예상 침수 깊이를 한 화면에서 봅니다.">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>침수이력 및 범람예상도 | 메타커버</title>
-  <style>
-    :root { color-scheme: light; color: #253c4c; background: #fff; font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; }
-    * { box-sizing: border-box; }
-    body,figure { margin: 0; }
-    .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
-    .map-window { width: 100%; overflow: auto; overscroll-behavior: contain; background: #fff; }
-    .map-crop { width: 100%; aspect-ratio: 1612 / 775; overflow: hidden; }
-    .map-image { display: block; width: 100%; height: auto; }
-    .map-window.enlarged { max-height: calc(100vh - 43px); max-height: calc(100dvh - 43px); }
-    .enlarged .map-crop { width: max(1612px, 165vw); }
-    .caption { display: flex; align-items: center; gap: 14px; padding: 3px 12px; min-height: 37px; border-top: 1px solid #d6dfe3; color: #526671; background: #f5f7f7; font-size: 12px; }
-    .caption span { margin-right: auto; }
-    .caption a,.caption button { display: inline-flex; align-items: center; min-height: 30px; padding: 3px 0; color: #1b4c64; font: inherit; line-height: 1.4; cursor: pointer; }
-    .caption a { text-underline-offset: 3px; }
-    .caption button { border: 0; background: transparent; }
-    :focus-visible { outline: 2px solid #1c7182; outline-offset: 2px; }
-    .map-window:focus-visible { outline-offset: -2px; }
-    .error { margin: 0; padding: 24px 12px; line-height: 1.6; }
-    [hidden] { display: none !important; }
-  </style>
+  <meta name="description" content="수원·용인·오산 8개 지역의 지방하천 50년 빈도 범람예상도를 확대하고 관심 위치를 확인하세요.">
+  <meta name="theme-color" content="#183447">
+  <link href="./viewer.css" rel="stylesheet">
+  <script defer src="./areas.js"></script>
+  <script defer src="./basemap.js"></script>
+  <script defer src="./viewer.js"></script>
 </head>
 <body>
+  <header class="mast">
+    <a class="brand" href="./" aria-label="메타커버 지도 처음으로"><svg viewBox="0 0 32 24" aria-hidden="true"><path d="m2 17 7-10 7 10 7-10 7 10M3 21h26" fill="none" stroke="currentColor" stroke-width="3"/></svg>METACOVER</a>
+    <h1>침수이력 및 범람예상도</h1>
+    <button id="help-open" class="help" aria-haspopup="dialog" aria-controls="help"><span aria-hidden="true">ⓘ</span> 자료 안내</button>
+  </header>
   <main>
-    <h1 class="sr-only">메타커버 침수이력 및 범람예상도</h1>
-    <figure>
-      <div id="map-window" class="map-window" role="region" aria-label="메타커버 지도 시연 화면">
-        <div id="map-crop" class="map-crop">
-          <img id="map-image" class="map-image" width="1612" height="790" src="https://metacover-flood-atlas-kr.ksyunsai.chatgpt.site/screen.png" fetchpriority="high" draggable="false" alt="수원시 4개 구, 용인시 3개 구와 오산시의 지방하천 50년 빈도 범람예상도. 분홍색은 범람 위치를 강조하고 파란색과 보라색 5단계는 예상 침수 깊이 0.5m 미만부터 5m 이상까지를 나타냅니다.">
-        </div>
-        <p id="map-error" class="error" role="status" hidden>지도 이미지를 불러오지 못했습니다. 아래의 ‘지역별 공식 지도’를 열어 주세요.</p>
+    <div class="query"><strong>지방하천 <b>·</b> 50년 빈도</strong><label for="area">조회 지역</label><select id="area"><option value="all">전체 지역</option></select></div>
+    <section class="map-shell" aria-label="수원·용인·오산 범람예상도">
+      <div id="viewport" tabindex="0" role="region" aria-label="지도. 방향키로 이동하고 더하기와 빼기 키로 확대·축소합니다.">
+        <div id="forecast-plane" aria-hidden="true"><img id="reference" draggable="false" width="1612" height="790" alt="" fetchpriority="high" src="https://metacover-flood-atlas-kr.ksyunsai.chatgpt.site/screen.png"></div>
+        <div id="base-canvas" hidden></div>
+        <div id="focus-marker" hidden></div>
       </div>
-      <figcaption class="caption">
-        <span>시연 화면</span>
-        <button type="button" id="zoom" aria-controls="map-window" aria-pressed="false" hidden>크게 보기</button>
-        <a href="./live/">지역별 공식 지도</a>
-      </figcaption>
-    </figure>
+      <div class="top-tools" aria-label="지도 보기 설정">
+        <div class="switch"><button id="road" type="button" aria-pressed="true">일반지도</button><button id="satellite" type="button" aria-pressed="false">위성영상</button></div>
+        <button id="layers" type="button" aria-expanded="false" aria-controls="layer-menu"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m2 7 8-4 8 4-8 4-8-4Zm0 4 8 4 8-4M2 15l8 4 8-4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>레이어</button>
+      </div>
+      <div id="layer-menu" class="flyout" hidden><label><input id="flood-layer" type="checkbox" checked> 50년 빈도 범람예상도</label><p>예상 침수심과 분홍색 범람 위치를 담은 시연 지도를 표시합니다.</p></div>
+      <div class="side-tools"><button id="reset" title="전체 지역 보기" aria-label="전체 지역 보기"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7V3h4m6 0h4v4m0 6v4h-4M7 17H3v-4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="10" r="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button><div class="vertical-switch"><button id="zoom-in" title="확대" aria-label="확대">+</button><button id="zoom-out" title="축소" aria-label="축소">−</button></div></div>
+      <section id="point-card" class="point-card" aria-label="선택한 지도 위치" hidden><header><b>선택한 위치</b><button id="point-close" aria-label="위치 정보 닫기">×</button></header><p id="point-coordinates"></p><div class="point-actions"><button id="point-zoom" type="button">여기 확대</button><a id="point-link" href="./live/">이 위치 공식 지도 ↗</a></div></section>
+      <p id="loading" class="notice" role="status" hidden></p>
+      <div class="map-scale" aria-hidden="true"><span id="scale-label"></span><i id="scale-line"></i></div>
+      <div id="forecast-credit"><span class="google-credit" aria-label="Google"></span><span class="data-credit">지도 데이터 ©2026 TMap Mobility</span></div>
+      <div id="base-credit" hidden></div>
+    </section>
+    <section class="legend" aria-label="침수심 범례"><strong>50년 빈도 예상 침수심</strong>
+      <span><i style="--swatch:#87d5de"></i>0.5m 미만</span><span><i style="--swatch:#3aa8c7"></i>0.5~1m</span><span><i style="--swatch:#367ec4"></i>1~2m</span><span><i style="--swatch:#5355a8"></i>2~5m</span><span><i style="--swatch:#6a3389"></i>5m 이상</span><span class="outline"><i></i>범람 위치 강조</span>
+    </section>
+    <footer><span id="view-label">전체 지역</span><span aria-hidden="true">·</span><span id="view-info">지도를 누르면 선택 위치를 확대하거나 공식 지도를 열 수 있습니다.</span><a href="./live/">지역별 공식 지도 ↗</a></footer>
   </main>
-  <script>
-    const viewport = document.getElementById("map-window");
-    const crop = document.getElementById("map-crop");
-    const mapImage = document.getElementById("map-image");
-    const zoom = document.getElementById("zoom");
-    const errorMessage = document.getElementById("map-error");
-    function showImageStatus() {
-      const loaded = mapImage.naturalWidth > 0;
-      crop.hidden = !loaded;
-      zoom.hidden = !loaded;
-      errorMessage.hidden = loaded;
-    }
-    mapImage.addEventListener("load", showImageStatus);
-    mapImage.addEventListener("error", showImageStatus);
-    if (mapImage.complete) showImageStatus();
-    zoom.addEventListener("click", () => {
-      const enlarged = viewport.classList.toggle("enlarged");
-      zoom.setAttribute("aria-pressed", String(enlarged));
-      zoom.textContent = enlarged ? "전체 보기" : "크게 보기";
-      if (enlarged) {
-        viewport.tabIndex = 0;
-        viewport.scrollLeft = (viewport.scrollWidth - viewport.clientWidth) / 2;
-        viewport.scrollTop = (viewport.scrollHeight - viewport.clientHeight) / 2;
-        viewport.focus({ preventScroll: true });
-      } else {
-        viewport.removeAttribute("tabindex");
-        viewport.scrollTo(0, 0);
-      }
-    });
-  </script>
+  <dialog id="help" aria-labelledby="help-title"><header><h2 id="help-title">자료 안내</h2><button id="help-close">닫기</button></header>
+    <h3>지방하천 50년 빈도 범람예상도</h3><p>수원시 4개 구, 용인시 3개 구, 오산시의 예상 침수 깊이를 다섯 가지 색으로 표시합니다. 분홍색은 전체 화면에서 범람 위치를 쉽게 찾도록 강조한 윤곽입니다.</p>
+    <h3>지도 살펴보기</h3><p>조회 지역을 고르거나 지도를 끌어 이동하세요. 더블클릭, 마우스 휠, 두 손가락으로 확대할 수 있습니다. 위치를 한 번 누르면 그 지점 중심의 공식 지도를 열 수 있습니다.</p><p>첫 화면은 메타커버 시연 이미지입니다. 확대 시 원본 해상도가 유지됩니다. 위성영상과 범람 레이어를 끈 일반지도는 배경을 살펴보는 용도입니다.</p>
+    <p class="source">범람 자료 · 한강홍수통제소 지방하천 하천범람지도</p><nav><a href="./live/">지역별 공식 지도</a><a href="./history/">침수 발생 기록</a></nav>
+  </dialog>
+  <noscript>지도를 조작하려면 자바스크립트를 사용하세요. <a href="./live/">지역별 공식 지도 열기</a></noscript>
 </body>
 </html>
