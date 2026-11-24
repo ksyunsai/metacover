@@ -2,107 +2,77 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#183447">
-  <meta name="description" content="수원·용인·오산의 지방하천 50년 빈도 범람예상도를 경기기후지도에서 확인하고 지역별 침수 기록을 살펴보세요.">
+  <meta name="description" content="수원·용인·오산 8개 지역의 지방하천 50년 빈도 범람예상도와 예상 침수 깊이를 한 화면에서 봅니다.">
   <title>침수이력 및 범람예상도 | 메타커버</title>
   <style>
-    :root {
-      font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif;
-      color:#203643;background:#fff;color-scheme:light;word-break:keep-all;
-    }
-    * { box-sizing:border-box; }
-    body { margin:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column; }
-    h1,h2,h3,p { margin:0; }
-    a { color:#185973;text-underline-offset:3px; }
-    button,select { font:inherit;color:inherit; }
-    button,select,summary { cursor:pointer; }
-    :focus-visible { outline:3px solid #e2a134;outline-offset:2px; }
-    .skip { position:absolute;z-index:10;top:-80px;left:12px;background:#fff;padding:10px; }
-    .skip:focus { top:8px; }
-    .mast { flex:none;display:flex;align-items:center;gap:17px;min-height:55px;padding:8px 23px;background:#183447;color:white; }
-    .brand { display:inline-flex;gap:7px;align-items:center;color:white;text-decoration:none;font:750 17px/1 Arial,sans-serif;letter-spacing:.025em; }
-    .brand svg { width:29px;height:29px; }
-    .rule { height:19px;width:1px;background:#58707a; }
-    h1 { font-size:18px;line-height:1.3;font-weight:650;letter-spacing:-.05em; }
-    .help { margin-left:auto;display:inline-flex;align-items:center;gap:6px;min-height:31px;padding:4px 2px;border:0;background:none;color:white;font-size:12px;font-weight:600; }
-    .help svg { width:16px;height:16px; }
-    .query { flex:none;display:flex;align-items:center;gap:12px;min-height:43px;padding:5px 23px;border-bottom:1px solid #bdcbd2;background:white; }
-    .scenario { font-weight:650;color:#30546a;font-size:13px; }
-    .scenario span { color:#899ca7; }
-    .place { margin-left:auto;display:flex;align-items:center;gap:7px;color:#465e6c;font-size:12px;white-space:nowrap; }
-    .place select { min-width:130px;max-width:48vw;height:30px;padding:2px 7px;border-radius:3px;border:1px solid #a7b8c2;background:#fff;font-size:13px;color:#163849; }
-    .viewer { flex:1 0 auto;min-height:730px;width:100%;display:flex;background:#eef2f3; }
-    .viewer iframe { display:block;flex:1;align-self:stretch;width:100%;min-height:730px;border:0; }
-    .foot { flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:30px;padding:4px 15px;border-top:1px solid #d0dbdf;background:#f5f7f7;color:#465f6c;font-size:11px;line-height:1.5; }
-    .foot a { white-space:nowrap;font-weight:650; }
-    .sr { position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap; }
-    dialog { width:min(440px,calc(100% - 28px));max-height:85dvh;overflow:auto;margin:auto;padding:0;border:1px solid #abc0c6;border-radius:5px;color:#213d4a;box-shadow:0 12px 40px #132e3c36; }
-    dialog::backdrop { background:#16303d60; }
-    .dialog-head { padding:14px 17px;border-bottom:1px solid #d3dfe2;display:flex;align-items:center;justify-content:space-between; }
-    .dialog-head h2 { font-size:18px; }
-    .dialog-head button { font-size:12px;padding:5px 9px;border:1px solid #abbfc4;border-radius:3px;background:white; }
-    .dialog-body { padding:4px 17px 16px; }
-    .dialog-body section { padding:12px 0; }
-    .dialog-body section+section { border-top:1px solid #dbe4e6; }
-    .dialog-body h3 { font-size:14px;margin-bottom:5px; }
-    .dialog-body p,.dialog-body a { font-size:13px;line-height:1.65; }
-    @media (max-width:650px) {
-      .mast { min-height:46px;gap:8px;padding:5px 10px; }
-      .brand { gap:4px;font-size:14px; }.brand svg { width:23px;height:23px; }
-      .rule { height:15px; }h1 { font-size:clamp(12px,3.5vw,16px); }
-      .help { font-size:11px;gap:4px; }.help svg { width:15px;height:15px; }
-      .query { min-height:36px;gap:5px;padding:4px 10px; }.scenario,.place,.place select { font-size:11px; }
-      .place { gap:5px; }.place select { min-width:104px;height:27px; }
-      .foot { min-height:28px;font-size:10px;gap:6px;padding:4px 8px; }
-    }
-    @media(max-width:359px){.help span{display:none}.foot .purpose{display:none}}
+    :root { color-scheme: light; color: #253c4c; background: #fff; font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; }
+    * { box-sizing: border-box; }
+    body,figure { margin: 0; }
+    .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+    .map-window { width: 100%; overflow: auto; overscroll-behavior: contain; background: #fff; }
+    .map-crop { width: 100%; aspect-ratio: 1612 / 775; overflow: hidden; }
+    .map-image { display: block; width: 100%; height: auto; }
+    .map-window.enlarged { max-height: calc(100vh - 43px); max-height: calc(100dvh - 43px); }
+    .enlarged .map-crop { width: max(1612px, 165vw); }
+    .caption { display: flex; align-items: center; gap: 14px; padding: 3px 12px; min-height: 37px; border-top: 1px solid #d6dfe3; color: #526671; background: #f5f7f7; font-size: 12px; }
+    .caption span { margin-right: auto; }
+    .caption a,.caption button { display: inline-flex; align-items: center; min-height: 30px; padding: 3px 0; color: #1b4c64; font: inherit; line-height: 1.4; cursor: pointer; }
+    .caption a { text-underline-offset: 3px; }
+    .caption button { border: 0; background: transparent; }
+    :focus-visible { outline: 2px solid #1c7182; outline-offset: 2px; }
+    .map-window:focus-visible { outline-offset: -2px; }
+    .error { margin: 0; padding: 24px 12px; line-height: 1.6; }
+    [hidden] { display: none !important; }
   </style>
-  <script defer src="./official-map.js"></script>
 </head>
 <body>
-  <a class="skip" href="#official-map">공식 지도로 바로가기</a>
-  <header class="mast">
-    <a href="./" class="brand" aria-label="메타커버 지도 처음으로">
-      <svg viewBox="0 0 36 36" aria-hidden="true"><path fill="none" stroke="#91d7be" stroke-width="3.6" d="m3 23 8-13 7 11 7-11 8 13M4 28h28"/></svg>METACOVER
-    </a>
-    <span class="rule" aria-hidden="true"></span><h1>침수이력 및 범람예상도</h1>
-    <button class="help" type="button" id="open-help" aria-haspopup="dialog" aria-controls="help" aria-label="자료 안내">
-      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M10 9v5m0-9v1.5"/></svg><span>자료 안내</span>
-    </button>
-  </header>
-  <div class="query">
-    <span class="scenario">지방하천 <span>·</span> 50년 빈도</span>
-    <label class="place" for="area">조회 지역
-      <select id="area" aria-describedby="area-note">
-        <option value="all" data-center="127.12,37.23" data-range="75000">전체 지역</option>
-        <option value="osan" data-center="127.0538,37.1620" data-range="13000">오산시</option>
-        <option value="paldal" data-center="127.0135,37.2720" data-range="8000">수원시 팔달구</option>
-        <option value="gwonseon" data-center="126.9856,37.2612" data-range="14000">수원시 권선구</option>
-        <option value="yeongtong" data-center="127.0640,37.2779" data-range="13000">수원시 영통구</option>
-        <option value="jangan" data-center="127.0042,37.3157" data-range="10000">수원시 장안구</option>
-        <option value="giheung" data-center="127.1232,37.2675" data-range="17000">용인시 기흥구</option>
-        <option value="cheoin" data-center="127.2716,37.2199" data-range="41000">용인시 처인구</option>
-        <option value="suji" data-center="127.0824,37.3315" data-range="15000">용인시 수지구</option>
-      </select>
-    </label>
-    <span class="sr" id="area-note">지역을 선택하면 경기기후지도가 해당 지역을 중심으로 다시 열립니다.</span>
-  </div>
-  <main class="viewer" aria-label="경기기후지도 공식 지도">
-    <iframe id="official-map" title="경기기후지도 · 지방하천 50년 빈도 · 수원·용인·오산" tabindex="0" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" src="https://climate.gg.go.kr/gcs/cmm/selectMainMap.do?lang=kor#climate_rain#rfm_sgg_rgn_41_050&amp;freq=50&amp;center=127.12,37.23&amp;range=75000"></iframe>
+  <main>
+    <h1 class="sr-only">메타커버 침수이력 및 범람예상도</h1>
+    <figure>
+      <div id="map-window" class="map-window" role="region" aria-label="메타커버 지도 시연 화면">
+        <div id="map-crop" class="map-crop">
+          <img id="map-image" class="map-image" width="1612" height="790" src="https://metacover-flood-atlas-kr.ksyunsai.chatgpt.site/screen.png" fetchpriority="high" draggable="false" alt="수원시 4개 구, 용인시 3개 구와 오산시의 지방하천 50년 빈도 범람예상도. 분홍색은 범람 위치를 강조하고 파란색과 보라색 5단계는 예상 침수 깊이 0.5m 미만부터 5m 이상까지를 나타냅니다.">
+        </div>
+        <p id="map-error" class="error" role="status" hidden>지도 이미지를 불러오지 못했습니다. 아래의 ‘지역별 공식 지도’를 열어 주세요.</p>
+      </div>
+      <figcaption class="caption">
+        <span>시연 화면</span>
+        <button type="button" id="zoom" aria-controls="map-window" aria-pressed="false" hidden>크게 보기</button>
+        <a href="./live/">지역별 공식 지도</a>
+      </figcaption>
+    </figure>
   </main>
-  <footer class="foot">
-    <span>경기기후지도 <span class="purpose">· </span>처음에 가이드가 뜨면 ‘닫기’를 누르세요.</span>
-    <a id="open-official" target="_blank" rel="noopener" href="https://climate.gg.go.kr/gcs/cmm/selectMainMap.do?lang=kor#climate_rain#rfm_sgg_rgn_41_050&amp;freq=50&amp;center=127.12,37.23&amp;range=75000">공식 지도 새 창에서 열기 ↗</a>
-  </footer>
-  <p class="sr" id="map-status" role="status"></p>
-  <dialog id="help" aria-labelledby="help-title">
-    <header class="dialog-head"><h2 id="help-title">자료 안내</h2><button id="close-help" type="button">닫기</button></header>
-    <div class="dialog-body">
-      <section><h3>지방하천 범람예상도</h3><p>경기도 경기기후지도의 지방하천 50년 빈도 레이어입니다. 첫 방문에 ‘가이드’가 뜨면 하단의 ‘닫기’를 누르세요. 작은 화면에서는 페이지를 아래로 스크롤하면 보입니다. 예상 침수 범위와 깊이는 공식 지도 안의 범례로 읽을 수 있습니다. 지역을 선택하면 지도 중심이 이동합니다.</p></section>
-      <section><h3>과거 침수 발생 기록</h3><p>수원·용인·오산에서 문헌으로 확인된 침수 사례와 기록별 출처를 볼 수 있습니다.</p><a href="./history/">침수 발생 기록 보기 →</a></section>
-      <section><h3>개인 지도 파일</h3><p>메타커버 지도 ZIP을 가지고 있다면 내 브라우저에서 범람예상도를 열 수 있습니다.</p><a href="./forecast/">내 파일로 범람예상도 보기 →</a></section>
-    </div>
-  </dialog>
+  <script>
+    const viewport = document.getElementById("map-window");
+    const crop = document.getElementById("map-crop");
+    const mapImage = document.getElementById("map-image");
+    const zoom = document.getElementById("zoom");
+    const errorMessage = document.getElementById("map-error");
+    function showImageStatus() {
+      const loaded = mapImage.naturalWidth > 0;
+      crop.hidden = !loaded;
+      zoom.hidden = !loaded;
+      errorMessage.hidden = loaded;
+    }
+    mapImage.addEventListener("load", showImageStatus);
+    mapImage.addEventListener("error", showImageStatus);
+    if (mapImage.complete) showImageStatus();
+    zoom.addEventListener("click", () => {
+      const enlarged = viewport.classList.toggle("enlarged");
+      zoom.setAttribute("aria-pressed", String(enlarged));
+      zoom.textContent = enlarged ? "전체 보기" : "크게 보기";
+      if (enlarged) {
+        viewport.tabIndex = 0;
+        viewport.scrollLeft = (viewport.scrollWidth - viewport.clientWidth) / 2;
+        viewport.scrollTop = (viewport.scrollHeight - viewport.clientHeight) / 2;
+        viewport.focus({ preventScroll: true });
+      } else {
+        viewport.removeAttribute("tabindex");
+        viewport.scrollTo(0, 0);
+      }
+    });
+  </script>
 </body>
 </html>
